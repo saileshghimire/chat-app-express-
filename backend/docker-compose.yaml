@@ -1,29 +1,30 @@
 version: '3.8'
 services:
-  db:
+  chat_postgres:
     image: postgres:17
     container_name: chat_postgres
     environment:
       - POSTGRES_USER=chatuser
       - POSTGRES_PASSWORD=chatpassword
-      - POSTGRES_DB= chatapp
+      - POSTGRES_DB=chatapp
     ports:
       - "5432:5432"
     volumes:
-      - db_data:/var/lib/postgresql/db_data
-  
-  backend:
-    build: 
-      context:  .
-      dockerfile: Dockerfile
-    container_name: chat_backend
-    depends_on:
-      - db
-    ports:
-      - "3000:3000"
-    environment:
-      - DATABASE_URL= "postgresql://chatuser:chatpassword@db:5432/chatdb"
-    volumes:
-      - .:/ app
+      - chatapp_data:/var/lib/postgresql/data
+
+  # backend:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   container_name: chat_backend
+  #   depends_on:
+  #     - chat_postgres
+  #   ports:
+  #     - "3000:3000"
+  #   # Avoid overwriting node_modules in the container
+  #   volumes:
+  #     - .:/app
+  #     - /app/node_modules
+
 volumes:
-  db_data:
+  chatapp_data:
