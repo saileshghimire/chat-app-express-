@@ -1,9 +1,9 @@
 import { Server } from "socket.io";
-import { authenticateSocket } from "./socket/authencation";
-import { handleConnection } from "./socket/connection";
-import { sendRequest } from "./socket/sendRequest";
-import { handleGroupCreation } from "./socket/gropuMessage";
-import { sendMessage } from "./socket/sendMessage";
+import { authenticateSocket } from "../socket/authencation";
+import { handleConnection } from "../socket/connection";
+import { sendRequest } from "../socket/sendRequest";
+import { handleGroupCreation } from "../socket/gropuMessage";
+import { sendMessage } from "../socket/sendMessage";
 
 export const setupSocketServer = (server:any) =>{
     const io = new Server(server, {

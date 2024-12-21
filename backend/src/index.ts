@@ -5,7 +5,7 @@ import morgan from 'morgan';
 import { PORT } from './secret';
 import rootRouter from './route';
 import { PrismaClient } from '@prisma/client';
-import { setupSocketServer } from './server';
+import { setupSocketServer } from './server/server';
 
 const app = express();
 const server = http.createServer(app);
