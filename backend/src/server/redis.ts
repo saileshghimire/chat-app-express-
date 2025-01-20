@@ -1,12 +1,14 @@
-import { createClient } from "redis"
+import { createClient } from "redis";
 
+export const redisClient = createClient({
+    url:'chat_redis:6379'
+});
 
-const redisPublisher = createClient();
-const redisSuscriber = createClient();
+redisClient.on('error', (err) => console.error('Redis Client Error', err));
 
-
-redisPublisher.connect();
-redisSuscriber.connect();
-
-
-export { redisPublisher, redisSuscriber };
+export const connectRedis = async()=>{
+if(!redisClient.isOpen){
+    await redisClient.connect();
+    console.log('Redis Client Connected');
+}
+};

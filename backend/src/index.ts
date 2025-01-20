@@ -6,6 +6,7 @@ import { PORT } from './secret';
 import rootRouter from './route';
 import { PrismaClient } from '@prisma/client';
 import { setupSocketServer } from './server/server';
+import { connectRedis } from './server/redis';
 
 const app = express();
 const server = http.createServer(app);
@@ -21,6 +22,10 @@ app.get('/', (req: Request,res: Response)=>{
 })
 export const prisma = new PrismaClient()
 setupSocketServer(server);
+
+(async () => {
+    await connectRedis();
+  })();
 
 server.listen(PORT, () => {
       console.log(`Server is running on port http://localhost:${PORT}`);
