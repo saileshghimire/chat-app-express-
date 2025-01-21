@@ -1,13 +1,12 @@
-FROM node:18-alpine
+FROM node:18
 
 WORKDIR /app
 
 COPY package.json ./
-COPY yarn.lock ./
+# COPY yarn.lock ./
 # Install dependencies
 RUN yarn install
-
 COPY . .
-
 EXPOSE 3000
-CMD ["yarn", "start"]
+RUN yarn prisma generate
+CMD ["yarn", "dev"]

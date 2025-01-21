@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { connectSocket } from "../helper/socket";
 
 const Login: React.FC = () => {
-  const [username, setUsername] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -12,12 +12,14 @@ const Login: React.FC = () => {
   const handleLogin = async () => {
     try {
       // Send login request to backend
-      const response = await axios.post("http://localhost:3000/api/v1/login", {
-        username,
+      const response = await axios.post("http://192.168.1.122:3000/api/v1/user/login", {
+        email,
         password,
       });
 
-      const { token } = response.data; // Assume the backend sends a token on successful login
+      const { access_token, username } = response.data; // Assume the backend sends a token on successful login
+      const token = access_token;
+      localStorage.setItem("username", username); 
       localStorage.setItem("token", token); // Store the token in localStorage
       connectSocket(token); // Connect to socket server with JWT token
       navigate("/chat"); // Redirect to chat page
@@ -32,9 +34,9 @@ const Login: React.FC = () => {
       {error && <div className="error">{error}</div>}
       <input
         type="text"
-        placeholder="Username"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
       />
       <input
         type="password"

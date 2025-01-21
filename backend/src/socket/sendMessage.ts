@@ -14,7 +14,7 @@ export const sendMessage = (io: Server, socket: Socket): void => {
     await prisma.messages.create({
       data: {
         sender_username: sender,
-        receiver_username: "group",
+        receiver_username: groupId,
         context: message,
       },
     });
@@ -25,6 +25,8 @@ export const sendMessage = (io: Server, socket: Socket): void => {
       .filter((id) => id !== socket.id);
 
     if (receiverSocketIds.length > 0) {
+      console.log("sender", sender);
+      console.log("message", message);
       publishMessage(channel, JSON.stringify({ sender, message }));
     } else {
       await enqueueMessage(channel, JSON.stringify({ sender, message }));

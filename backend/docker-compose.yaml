@@ -14,24 +14,30 @@ services:
 
   redis:
     image: redis:7
-    container_name: chat_redis
+    container_name: chat_on_redis
     ports:
-      - "6379:6379"
-    command: redis-server
+      - "6370:6370"
+    command: redis-server --port 6370
 
-  # backend:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile
-  #   container_name: chat_backend
-  #   depends_on:
-  #     - chat_postgres
-  #     - redis
-  #   ports:
-  #     - "3000:3000"
-  #   volumes:
-  #     - .:/app
-  #     - /app/node_modules
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: chat_backend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - chat_postgres
+      - redis
+    environment:
+      - PORT=3000
+      - NODE_ENV=development
+      - DATABASE_URL=postgres://chatuser:chatpassword@chat_postgres:5432/chatapp
+      - REDIS_URL=redis://chat_on_redis:6370
+      - REDIS_HOST=redis
+      - REDIS_PORT=6370
+    volumes:
+      - .:/app
 
 volumes:
   chatapp_data:

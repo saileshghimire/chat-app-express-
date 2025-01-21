@@ -1,7 +1,7 @@
 import { createClient } from "redis";
 
 export const redisClient = createClient({
-    url:'chat_redis:6379'
+    url:'redis://chat_on_redis:6370'
 });
 
 redisClient.on('error', (err) => console.error('Redis Client Error', err));

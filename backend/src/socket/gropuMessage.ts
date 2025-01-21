@@ -1,6 +1,6 @@
 import { prisma } from "..";
 import { Server, Socket } from 'socket.io';
-import { activeUsers } from './connection';
+import { activeUserSockets } from './connection';
 
 export const handleGroupCreation = (io: Server, socket: Socket): void => {
   socket.on('accept_request', async ({ senderUsername }: { senderUsername: string }) => {
@@ -9,7 +9,7 @@ export const handleGroupCreation = (io: Server, socket: Socket): void => {
       data: { name: groupName },
     });
 
-    const senderSocketId = activeUsers[senderUsername];
+    const senderSocketId = activeUserSockets[senderUsername];
     if (senderSocketId) {
       io.to(senderSocketId).emit('group_created', { groupId: group.id });
     }

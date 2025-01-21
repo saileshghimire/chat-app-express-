@@ -2,9 +2,10 @@ import { io, Socket } from 'socket.io-client';
 
 let socket: Socket | undefined;
 
-export const connectSocket = (token: any) => {
+export const connectSocket = () => {
   // Initialize the socket connection with the JWT token
-  socket = io("http://localhost:3000", {
+  const token  = localStorage.getItem("token");
+  socket = io("192.168.1.122:3000", {
     auth: {
       token: token,
     },

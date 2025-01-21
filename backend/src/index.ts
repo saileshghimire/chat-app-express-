@@ -11,7 +11,10 @@ import { connectRedis } from './server/redis';
 const app = express();
 const server = http.createServer(app);
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: "http://192.168.1.122:5173",
+  methods: ['GET', 'POST']
+}));
 app.use(morgan('tiny'));
 app.disable('x-powered-by');
 

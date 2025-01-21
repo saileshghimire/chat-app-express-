@@ -17,9 +17,10 @@ export const UserLogin = async(data:LoginData):Promise<any> => {
         if(!bcrypt.compareSync(data.password, user.password)){
             return { error:"Incorrect Password"};
         }
+        const username = user.username;
         const access_token = jwt.sign({userId:user.id,username:user.username},JWT_SECRET,{expiresIn:'24h'})
         const refresh_token = jwt.sign({userId:user.id,username:user.username},JWT_SECRET,{expiresIn:'24h'})
-        return { access_token, refresh_token};
+        return { access_token, refresh_token, username};
     } catch (error) {
         if(ENVIRONMENT==="DEVELOPMENT"){
             console.log(`Error at UserCreation: ${error}`);   

@@ -1,21 +1,16 @@
 import { prisma } from "..";
 import { ENVIRONMENT } from "../secret";
+import { Request, Response } from "express";
 
 
-export const CreateMessage = async(data:any,sender_username:string,receiver_username:string) :Promise<any> =>{
+export const GetAllMessage = async(req:Request, res:Response) :Promise<any> =>{
     try {
-        const message = await prisma.messages.create({
-            data:{
-                sender_username:sender_username,
-                receiver_username: receiver_username,
-                context: data.message
-            }
-        });
-        return { message }
+        const message = (await prisma.messages.findMany({orderBy:{createdAt:"desc"}}));
+        return res.status(200).json({message});
     } catch (error) {
         if(ENVIRONMENT==="DEVELOPMENT"){
             console.log(error);   
         }
-        return { error:'Unable to send message'}
+        return res.status(500).json({message:"Internal Server Error"});
     }
 }

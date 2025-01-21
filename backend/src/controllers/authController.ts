@@ -49,9 +49,14 @@ export const login = async(req:Request, res:Response):Promise<any> =>{
         const result = await UserLogin(validateresult.value);
         if(result.error){
             return res.status(400).json({
-                access_token: result.access_token
+                message: result.error
             })
         }
+        return res.status(200).json({
+            access_token: result.access_token,
+            refresh_token: result.refresh_token,
+            username: result.username
+        })
     } catch (error) {
         if(ENVIRONMENT==="DEVELOPMENT"){
             console.log(error);   

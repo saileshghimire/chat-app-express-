@@ -14,23 +14,32 @@ interface MessageBoxProps {
 const MessageBox: React.FC<MessageBoxProps> = ({ username }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState<string>("");
-  const [groupId, setGroupId] = useState<string>("1"); // Example groupId
+  const [groupId, setGroupId] = useState<string>(""); // Example groupId
+
+  useEffect(() => {
+    setGroupId(username);
+  }, [username]);
 
   useEffect(() => {
     const socket = getSocket();
 
     if (socket) {
       // Listen for new messages
-      socket.on("receive_message", (message: string) => {
-        const parsedMessage = JSON.parse(message);
-        setMessages((prevMessages) => [...prevMessages, parsedMessage]);
+      socket.on("receive_message", (data: { sender: string; message: string }) => {
+        if (data.sender === groupId) {
+          const newMessage = {
+            sender: username,
+            message: data.message,
+          };
+          setMessages((prevMessages) => [...prevMessages, newMessage]);
+        }
       });
 
       return () => {
         socket.off("receive_message");
       };
     }
-  }, []);
+  }, [groupId, username]);
 
   const handleSendMessage = () => {
     const socket = getSocket();
