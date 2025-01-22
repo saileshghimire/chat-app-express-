@@ -5,12 +5,12 @@ export const enqueueMessage = async (queueName:string, message:string)=>{
     await redisClient.rPush(queueName, message);
 };
 
-export const dequeueMessage = async (queueName:string)=>{
+export const dequeueMessage = async (queueName:string):Promise<any>=>{
     console.log("Dequeueing message", queueName);
     return await redisClient.lPop(queueName);
 };
 
-export const getQueueLength = async (queueName:string)=>{
+export const getQueueLength = async (queueName:string):Promise<any>=>{
     console.log("Getting queue length", queueName);
     return await redisClient.lLen(queueName);
 };

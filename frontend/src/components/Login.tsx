@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { connectSocket } from "../helper/socket";
+// import { connectSocket } from "../helper/socket";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState<string>("");
@@ -21,7 +21,7 @@ const Login: React.FC = () => {
       const token = access_token;
       localStorage.setItem("username", username); 
       localStorage.setItem("token", token); // Store the token in localStorage
-      connectSocket(token); // Connect to socket server with JWT token
+      // connectSocket(); // Connect to socket server with JWT token
       navigate("/chat"); // Redirect to chat page
     } catch (err) {
       setError("Login failed. Please check your credentials.");

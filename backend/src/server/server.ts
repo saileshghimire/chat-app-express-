@@ -1,9 +1,7 @@
 import { Server } from "socket.io";
 import { authenticateSocket } from "../socket/authencation";
-import { handleConnection } from "../socket/connection";
-// import { sendRequest } from "../socket/sendRequest";
-import { handleGroupCreation } from "../socket/gropuMessage";
 import { sendMessage } from "../socket/sendMessage";
+import { joinRoom, leaveRoom } from "../socket/roomManager";
 
 export const setupSocketServer = (server:any) =>{
     const io = new Server(server, {
@@ -14,10 +12,19 @@ export const setupSocketServer = (server:any) =>{
     });
     io.use(authenticateSocket);
     io.on('connection',(socket)=>{
-        handleConnection(io, socket);
-        // sendRequest(io, socket);
+        // after authentication username is attached to the socket
+        const username = socket.data.username;
+        console.log(`User connected: ${username}`);
+        socket.on("join_room",(roomId:string)=>{
+            joinRoom(socket, roomId);
+            console.log(`${username} joined room ${roomId}`);
+        });
         sendMessage(io, socket);
-        handleGroupCreation(io, socket);
+
+        socket.on("disconnect",()=>{
+            leaveRoom(socket);
+            console.log(`User disconnected: ${username}`);
+        })
     });
     return io;
 }
