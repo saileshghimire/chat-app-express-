@@ -16,14 +16,18 @@ export const setupSocketServer = (server:any) =>{
         const username = socket.data.username;
         console.log(`User connected: ${username}`);
         socket.on("join_room",(roomId:string)=>{
-            joinRoom(socket, roomId);
+            joinRoom(socket, roomId,username);
             console.log(`${username} joined room ${roomId}`);
         });
         sendMessage(io, socket);
 
-        socket.on("disconnect",()=>{
-            leaveRoom(socket);
-            console.log(`User disconnected: ${username}`);
+        socket.on("leave_room",(roomId:string, username:string)=>{
+            leaveRoom(socket, roomId, username);
+            console.log(`${username} left room ${roomId}, done `);
+        })
+        socket.on("disconnect",(roomId)=>{
+            leaveRoom(socket, roomId, username);
+            console.log(`User disconnected: ${username} from ${roomId}`);
         })
     });
     return io;

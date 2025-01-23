@@ -15,13 +15,14 @@ const ChatApp = () => {
   const [roomId, setRoomId] = useState("");
   const [currentRoom, setCurrentRoom] = useState<string | null>(null);
   const [message, setMessage] = useState("");
+  const [receiver, setReceiver] = useState("");
   const [chatLog, setChatLog] = useState<{ sender: string; message: string }[]>(
     []
   );
 
   useEffect(() => {
     // Handle incoming messages
-    socket.on("receive_message", ({ sender, message }) => {
+    socket.on(`room_${roomId}`, ({ sender, message }) => {
       setChatLog((prev) => [...prev, { sender, message }]);
     });
 
@@ -31,10 +32,10 @@ const ChatApp = () => {
     });
 
     return () => {
-      socket.off("receive_message");
+      socket.off(`room_${roomId}`);
       socket.off("connect_error");
     };
-  }, []);
+  }, [roomId]);
 
   const joinRoom = () => {
     if (roomId.trim() === "") {
@@ -49,7 +50,7 @@ const ChatApp = () => {
 
   const leaveRoom = () => {
     if (currentRoom) {
-      socket.emit("leave_room");
+      socket.emit("leave_room", roomId, localStorage.getItem("username"));
       setCurrentRoom(null);
       setChatLog([]);
       toast.info("Left the room");
@@ -65,7 +66,7 @@ const ChatApp = () => {
       toast.error("Join a room to send messages");
       return;
     }
-    socket.emit("send_message", { roomId: currentRoom, message });
+    socket.emit(`send_message`, { roomId: currentRoom,receiver:receiver, message });
     setChatLog((prev) => [...prev, { sender: "You", message }]);
     setMessage(""); // Clear input after sending
   };
@@ -102,6 +103,18 @@ const ChatApp = () => {
               Leave Room
             </button>
           </div>
+        </div>
+
+        {/* Receiver */}
+        <div className="mb-4">
+        <input
+            type="text"
+            className="w-full p-2 border rounded mb-2"
+            placeholder="Enter Room ID"
+            value={receiver}
+            onChange={(e) => setReceiver(e.target.value)}
+            // disabled={!!currentRoom}
+          />
         </div>
 
         {/* Chat Log */}
