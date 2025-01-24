@@ -2,6 +2,7 @@ import { Server, Socket } from "socket.io";
 import { prisma } from "..";
 import { enqueueMessage } from "../queue/messageQueue";
 import { publishMessage } from "../redis/publisher";
+import { activeRooms } from "./roomManager";
 
 
 export const sendMessage = (io: Server, socket: Socket): void => {
@@ -19,20 +20,8 @@ export const sendMessage = (io: Server, socket: Socket): void => {
     });
 
     const channel = `room_${roomId}`;
-    const roomSockets = io.sockets.adapter.rooms.get(roomId) || new Set();
-
-    // if (roomSockets.size >0){
-    //   roomSockets.forEach((socketId)=>{
-    //     // send the message to all users in the room except the sender
-    //     if(socket.id !== socketId){
-    //       // io.to(socketId).emit(`${channel}`, {
-    //       //   sender,
-    //       //   message,
-    //       // });
-    //       console.log(`sender: ${sender} , message: ${message} in room ${channel}`);
-    //     }
-    //   })
-    // }
+    const roomSockets = activeRooms[roomId]; 
+    console.log(roomSockets.has(receiver));
     if(roomSockets.size>0 && roomSockets.has(receiver)){
       socket.broadcast.emit(`${channel}`, {
         sender,

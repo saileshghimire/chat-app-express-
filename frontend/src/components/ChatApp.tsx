@@ -110,7 +110,7 @@ const ChatApp = () => {
         <input
             type="text"
             className="w-full p-2 border rounded mb-2"
-            placeholder="Enter Room ID"
+            placeholder="Enter Receiver username"
             value={receiver}
             onChange={(e) => setReceiver(e.target.value)}
             // disabled={!!currentRoom}
